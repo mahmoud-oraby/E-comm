@@ -36,3 +36,40 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['token']
+
+
+class RequestPasswordResetEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(min_length=5)
+
+    class Meta:
+        fields = ["email"]
+
+
+class SetNewPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        min_length=6, max_length=68, write_only=True)
+    token = serializers.CharField(min_length=1, write_only=True)
+    uidb64 = serializers.CharField(min_length=1, write_only=True)
+
+    class Meta:
+        fields = ('uidb64', 'token', 'password')
+
+    def validate(self, attrs):
+        try:
+            password = attrs.get("password")
+            token = attrs.get("token")
+            uidb64 = attrs.get("uidb64")
+
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise serializers.ValidationError(
+                    {"error": "Invalid or expired token"})
+            user.set_password(password)
+            user.save()
+            return user
+        except Exception as e:
+            print(e)
+            raise serializers.ValidationError(
+                {"error": "Invalid or expired token"})

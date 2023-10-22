@@ -32,6 +32,13 @@ class Color(models.Model):
         return self.name
 
 
+class Size(models.Model):
+    size = models.CharField(max_length=10, unique=True, null=True)
+
+    def __str__(self):
+        return self.size
+
+
 class Product(models.Model):
     title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
@@ -43,6 +50,7 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="product", null=True, blank=True)
     colors = models.ManyToManyField(Color, blank=True, related_name="product")
+    sizes = models.ManyToManyField(Size, blank=True, related_name="product")
     available = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     free_shipping = models.BooleanField(default=False)

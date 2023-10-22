@@ -73,3 +73,9 @@ class SetNewPasswordSerializer(serializers.Serializer):
             print(e)
             raise serializers.ValidationError(
                 {"error": "Invalid or expired token"})
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

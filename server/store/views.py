@@ -41,3 +41,9 @@ class RateView(generics.ListCreateAPIView):
     queryset = Rate.objects.all()
     serializer_class = RateSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class ReviewView(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

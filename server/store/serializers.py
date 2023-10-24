@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from authentication.serializers import UserSerializer
-from .models import Product, Brand, Rate, Category, Color, Size
+from .models import Product, Brand, Rate, Category, Color, Size, Review
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -43,6 +43,25 @@ class SizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Size
         fields = ['size',]
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    product = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+    def get_user(self, obj):
+        user = obj.user
+        if user:
+            return user.username
+
+    def get_product(self, obj):
+        product = obj.product
+        if product:
+            return product.title
 
 
 class ProductSerializer(serializers.ModelSerializer):

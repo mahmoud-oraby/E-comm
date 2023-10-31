@@ -70,6 +70,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     colors = ColorSerializer(many=True)
     sizes = serializers.SerializerMethodField()
+    reviews = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -98,3 +99,14 @@ class ProductSerializer(serializers.ModelSerializer):
         if category:
             return category.name
         return None
+
+    def get_reviews(self, obj):
+        reviews = obj.reviews.all()
+        review_list = []
+        for review in reviews:
+            review_dict = {
+                'user': review.user.username,
+                'review': review.content,
+                'product': review.product.title, }
+            review_list.append(review_dict)
+        return review_list

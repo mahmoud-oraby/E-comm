@@ -34,6 +34,13 @@ class ProductView(generics.ListCreateAPIView):
         color = self.request.query_params.get("color", None)
         if color:
             queryset = queryset.filter(colors__name=color.title())
+
+        # Filter by best seller
+        bestseller = self.request.query_params.get("bestseller", None)
+        if bestseller:
+            bestseller = int(bestseller)
+            print(type(bestseller))
+            queryset = queryset.order_by("-selled")[0: bestseller]
         return queryset
 
 

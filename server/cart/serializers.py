@@ -31,7 +31,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(
                 cart=cart_obj, **validated_data)
-            print(validated_data["quantity"])
             return cart_item
 
     def get_cart(self, obj):
@@ -44,7 +43,7 @@ class ListCartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ('cart', 'product', 'quantity')
+        fields = ('id', 'cart', 'product', 'quantity', 'total_price')
         read_only_fields = ['id']
 
     def get_cart(self, obj):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "authentication",
     "store",
     "cart",
+    "order",
 ]
 
 REST_FRAMEWORK = {

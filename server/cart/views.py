@@ -23,8 +23,6 @@ class CartList(generics.ListCreateAPIView):
 
 #     def get_object(self):
 #         cart_id = Cart.objects.get(user=self.request.user)
-#         print(cart_id)
-#         print(self.queryset.filter(cart_id=cart_id))
 #         return self.queryset.filter(cart_id=cart_id).order_by("-id")
 
 #     def perform_create(self, serializer):
@@ -48,3 +46,9 @@ class CartItemListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = ListCartItemSerializer
+    lookup_field = "id"

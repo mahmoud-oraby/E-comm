@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from authentication.serializers import UserSerializer
-from .models import Product, Brand, Rate, Category, Color, Size, Review
+from .models import Product, Brand, Rate, Category, Color, Size, Review, WishList
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -64,6 +64,30 @@ class ReviewSerializer(serializers.ModelSerializer):
             return product.title
 
 
+class WishListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = WishList
+        fields = '__all__'
+
+    def get_user(self, obj):
+        return str(obj.user)
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        product = validated_data.pop("product")
+        print(product)
+        wishlist, created = WishList.objects.get_or_create(
+            user=user, product=product)
+        return wishlist
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop('user')
+        return representation
+
+
 class ProductSerializer(serializers.ModelSerializer):
     rate = serializers.SerializerMethodField()
     brand = BrandSerializer(read_only=False)
@@ -95,10 +119,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
 
-        category = obj.category
-        if category:
-            return category.name
-        return None
+        category = str(obj.category)
+
+        return category
 
     def get_reviews(self, obj):
         reviews = obj.reviews.all()

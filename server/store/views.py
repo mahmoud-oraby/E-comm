@@ -1,5 +1,4 @@
 from rest_framework import generics, permissions
-from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from .permissions import IsAdminOrReadOnly
@@ -54,3 +53,20 @@ class ReviewView(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class WishListView(generics.ListCreateAPIView):
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user).order_by('-id')
+
+
+class WishListDetailView(generics.RetrieveDestroyAPIView):
+    queryset = WishList.objects.all()
+    serializer_class = WishListSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)

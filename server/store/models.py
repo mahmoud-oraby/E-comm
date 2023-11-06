@@ -83,3 +83,20 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.product}"
+
+# WishList model
+
+
+class WishList(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='wishlists')
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='wishlists')
+
+    def __str__(self):
+        return f'{self.user} wishlisted for {self.product}'
+
+    # Class Meta
+    class Meta:
+        verbose_name_plural = "Wishlist"
+        verbose_name = "Wishlist"

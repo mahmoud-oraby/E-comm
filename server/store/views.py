@@ -1,8 +1,9 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, response, status
 from .models import *
 from .serializers import *
 from .permissions import IsAdminOrReadOnly
 from django.db.models import Q
+from rest_framework.views import APIView
 
 
 class ProductView(generics.ListCreateAPIView):
@@ -55,18 +56,33 @@ class ReviewView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class WishListView(generics.ListCreateAPIView):
-    queryset = WishList.objects.all()
-    serializer_class = WishListSerializer
+class WishListAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        return WishList.objects.filter(user=self.request.user).order_by('-id')
+
+    def get(self, request, format=None):
+        queryset = self.get_queryset()
+        serializer = WishListDetailSerializer(
+            queryset, many=True)
+        return response.Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = WishListSerializer(
+            data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class WishListDetailView(generics.RetrieveDestroyAPIView):
     queryset = WishList.objects.all()
-    serializer_class = WishListSerializer
+    serializer_class = WishListDetailSerializer
     lookup_field = "id"
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)

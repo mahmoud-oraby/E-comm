@@ -77,15 +77,29 @@ class WishListSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         product = validated_data.pop("product")
-        print(product)
         wishlist, created = WishList.objects.get_or_create(
             user=user, product=product)
         return wishlist
 
     def to_representation(self, instance):
+        # Remove a user from json response
         representation = super().to_representation(instance)
         representation.pop('user')
         return representation
+
+
+class WishListDetailSerializer(WishListSerializer):
+    product = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
+    class Meta(WishListSerializer.Meta):
+        fields = WishListSerializer.Meta.fields
+
+    def get_user(self, obj):
+        return str(obj.user)
+
+    def get_product(self, obj):
+        return str(obj.product.title)
 
 
 class ProductSerializer(serializers.ModelSerializer):

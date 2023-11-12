@@ -7,7 +7,7 @@ from .views import (RegisterView, VerifyEmail, RequestPasswordResetEmailView,
                     PasswordTokenCheckAPIView, SetNewPasswordAPIView)
 
 urlpatterns = [
-    path("", RegisterView.as_view(), name='register'),
+    path("register/", RegisterView.as_view(), name='register'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('email_verify/', VerifyEmail.as_view(), name='email_verify'),

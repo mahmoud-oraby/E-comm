@@ -62,24 +62,14 @@ class Product(models.Model):
         return self.title
 
 
-class Rate(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="ratings")
-    product = models.ForeignKey(
-        "Product", on_delete=models.CASCADE, related_name="ratings")
-    rate = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5)])
-
-    def __str__(self):
-        return f"{self.user} rated {self.product} as {self.rate}"
-
-
-class Review(models.Model):
+class Evaluation(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews')
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='reviews', null=True)
+        Product, on_delete=models.CASCADE, related_name='reviews')
     content = models.TextField()
+    rate = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
         return f"{self.user} - {self.product}"

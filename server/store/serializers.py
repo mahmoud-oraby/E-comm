@@ -1,30 +1,12 @@
 from rest_framework import serializers
 from authentication.serializers import UserSerializer
-from .models import Product, Brand, Rate, Category, Color, Size, Review, WishList
+from .models import Product, Brand, Category, Color, Size, Evaluation, WishList
 
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = '__all__'
-
-
-class RateSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    product = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Rate
-        fields = '__all__'
-
-    def get_user(self, obj):
-        return obj.user.username
-
-    def get_product(self, obj):
-        product = obj.product
-        if product:
-            return product.title
-        return None
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -45,13 +27,22 @@ class SizeSerializer(serializers.ModelSerializer):
         fields = ['size',]
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class EvaluationSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     product = serializers.SerializerMethodField()
 
     class Meta:
-        model = Review
+        model = Evaluation
         fields = '__all__'
+
+    def create(self, validated_data):
+        # Get the user and product objects from the context or the data
+        user = self.context['request'].user
+        product = Product.objects.get(id=self.initial_data['product'])
+        # Create the evaluation object with the user and product
+        evaluation = Evaluation.objects.create(
+            user=user, product=product, **validated_data)
+        return evaluation
 
     def get_user(self, obj):
         user = obj.user
@@ -103,20 +94,19 @@ class WishListDetailSerializer(WishListSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    rate = serializers.SerializerMethodField()
     brand = BrandSerializer(read_only=False)
     category = serializers.SerializerMethodField()
     colors = ColorSerializer(many=True)
     sizes = serializers.SerializerMethodField()
-    reviews = serializers.SerializerMethodField()
+    evaluation = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = '__all__'
 
-    def get_rate(self, obj):
+    def get_evaluation(self, obj):
 
-        ratings = obj.ratings.all()
+        ratings = obj.reviews.all()
         rate_list = [rating.rate for rating in ratings]
         return sum(rate_list)/len(rate_list) if len(rate_list) > 0 else 0
 

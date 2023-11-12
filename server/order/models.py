@@ -12,6 +12,7 @@ class Order(models.Model):
         decimal_places=2, max_digits=5, blank=True)
     cart = models.ForeignKey(
         Cart, on_delete=models.SET_NULL, null=True, related_name="order")
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.order_id

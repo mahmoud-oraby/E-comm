@@ -4,9 +4,8 @@ from .models import *
 
 admin.site.register(Product)
 admin.site.register(Brand)
-admin.site.register(Rate)
 admin.site.register(Category)
 admin.site.register(Color)
 admin.site.register(Size)
-admin.site.register(Review)
+admin.site.register(Evaluation)
 admin.site.register(WishList)

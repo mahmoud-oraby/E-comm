@@ -44,16 +44,15 @@ class ProductView(generics.ListCreateAPIView):
         return queryset
 
 
-class RateView(generics.ListCreateAPIView):
-    queryset = Rate.objects.all()
-    serializer_class = RateSerializer
+class EvaluationView(generics.ListCreateAPIView):
+    queryset = Evaluation.objects.all()
+    serializer_class = EvaluationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
-class ReviewView(generics.ListCreateAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # def perform_create(self, serializer):
+    #     user = User.objects.get(username=self.request.user)
+    #     product = Product.objects.get(id=1)
+    #     serializer.save(user=user)
 
 
 class WishListAPIView(APIView):

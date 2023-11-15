@@ -7,8 +7,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Brand(models.Model):
     name = models.CharField(max_length=50, unique=True, null=True)
-    logo = models.ImageField(
-        upload_to="uploads/logos_brand/", null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -27,7 +25,6 @@ class Category(models.Model):
 
 class Color(models.Model):
     name = models.CharField(max_length=32)
-    rgb = models.CharField(max_length=32, null=True)
 
     def __str__(self):
         return self.name

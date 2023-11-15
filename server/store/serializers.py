@@ -94,9 +94,9 @@ class WishListDetailSerializer(WishListSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer(read_only=False)
+    brand = BrandSerializer(read_only=True)
     category = serializers.SerializerMethodField()
-    colors = ColorSerializer(many=True)
+    colors = ColorSerializer(many=True, read_only=True)
     sizes = serializers.SerializerMethodField()
     evaluation = serializers.SerializerMethodField()
 

@@ -6,14 +6,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30)
 
     class Meta:
         verbose_name = 'Category'
@@ -31,7 +31,7 @@ class Color(models.Model):
 
 
 class Size(models.Model):
-    size = models.CharField(max_length=10, unique=True)
+    size = models.CharField(max_length=10)
 
     def __str__(self):
         return self.size
@@ -43,7 +43,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     image = models.ImageField(upload_to="uploads/images_products/")
     discount = models.PositiveIntegerField()
-    brand = models.OneToOneField(
+    brand = models.ForeignKey(
         Brand, on_delete=models.CASCADE, related_name="product")
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="product")

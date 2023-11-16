@@ -37,11 +37,19 @@ class Size(models.Model):
         return self.size
 
 
+class Image(models.Model):
+    image = models.ImageField(upload_to='uploads/images_product/')
+
+    def __str__(self):
+        return str(self.image)
+
+
 class Product(models.Model):
     title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to="uploads/images_products/")
+    image = models.ImageField(upload_to='uploads/images_product/')
+    images = models.ManyToManyField(Image, blank=True, related_name="product")
     discount = models.PositiveIntegerField()
     brand = models.ForeignKey(
         Brand, on_delete=models.CASCADE, related_name="product")
@@ -49,6 +57,7 @@ class Product(models.Model):
         Category, on_delete=models.CASCADE, related_name="product")
     colors = models.ManyToManyField(Color, blank=True, related_name="product")
     sizes = models.ManyToManyField(Size, blank=True, related_name="product")
+    label = models.CharField(max_length=30, blank=True, null=True)
     available = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     free_shipping = models.BooleanField(default=False)

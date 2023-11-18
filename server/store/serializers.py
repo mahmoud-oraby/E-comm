@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from authentication.serializers import UserSerializer
-from .models import Product, Brand, Category, Color, Size, Evaluation, WishList
+from .models import (Product, Brand, Category, Color,
+                     Size, Evaluation, WishList, Image)
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 
 
 # class BrandSerializer(serializers.ModelSerializer):
@@ -174,10 +177,20 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     colors = ColorSerializer(many=True)
     sizes = SizeSerializer(many=True)
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = '__all__'
+
+    def get_images(self, obj):
+        images = obj.images.all()
+        current_site = get_current_site(self.context['request']).domain
+        image_list = []
+        for img in images:
+            image_list.append(
+                f'http://{current_site}{settings.MEDIA_URL + str(img)}')
+        return image_list
 
     def create(self, validated_data):
         brand_data = validated_data.pop('brand')
@@ -209,4 +222,11 @@ class ProductSerializer(serializers.ModelSerializer):
 class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
+        fields = '__all__'
+
+
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
         fields = '__all__'

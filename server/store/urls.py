@@ -18,6 +18,7 @@ from .views import (
     ProductViewSet,
     EvaluationViewSet,
     WishListViewSet,
+    ImageViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -28,6 +29,7 @@ router.register(r'sizes', SizeViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'evaluations', EvaluationViewSet)
 router.register(r'wishlists', WishListViewSet)
+router.register(r'images', ImageViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

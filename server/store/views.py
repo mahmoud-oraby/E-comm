@@ -88,7 +88,7 @@
 
 
 from rest_framework import viewsets
-from .models import Brand, Category, Color, Size, Product, Evaluation, WishList
+from .models import *
 from .serializers import (
     BrandSerializer,
     CategorySerializer,
@@ -97,6 +97,7 @@ from .serializers import (
     ProductSerializer,
     EvaluationSerializer,
     WishListSerializer,
+    ImageSerializer,
 )
 from rest_framework import mixins, response, status
 
@@ -143,3 +144,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 class WishListViewSet(viewsets.ModelViewSet):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
+
+
+class ImageViewSet(viewsets.ModelViewSet):
+    queryset = Image.objects.all()
+    serializer_class = ImageSerializer

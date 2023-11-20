@@ -94,12 +94,12 @@ from .serializers import (
     CategorySerializer,
     ColorSerializer,
     SizeSerializer,
-    ProductSerializer,
+    ProductListSerializer,
+    ProductDetailSerializer,
     EvaluationSerializer,
     WishListSerializer,
     ImageSerializer,
 )
-from rest_framework import mixins, response, status
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -129,16 +129,12 @@ class EvaluationViewSet(viewsets.ModelViewSet):
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductListSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     product = serializer.save()
-
-    #     # أي عمليات إضافية ترغب في القيام بها بعد إنشاء المنتج هنا
-
-    #     return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ProductDetailSerializer
+        return ProductListSerializer
 
 
 class WishListViewSet(viewsets.ModelViewSet):

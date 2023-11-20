@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from authentication.serializers import UserSerializer
+from cart.models import CartItem
 from .models import (Product, Brand, Category, Color,
                      Size, Evaluation, WishList, Image)
 from django.conf import settings
@@ -157,7 +157,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = '__all__'
+        fields = ["name"]
 
 
 class SizeSerializer(serializers.ModelSerializer):
@@ -172,16 +172,110 @@ class EvaluationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer()
-    category = CategorySerializer()
-    colors = ColorSerializer(many=True)
-    sizes = SizeSerializer(many=True)
+class ImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+# # class ProductCreateSerializer(serializers.ModelSerializer):
+#     brand = BrandSerializer()
+#     category = CategorySerializer()
+#     colors = ColorSerializer(many=True)
+#     sizes = SizeSerializer(many=True)
+#     images = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = Product
+#         fields = "__all__"
+
+#     def get_images(self, obj):
+#         images = obj.images.all()
+#         current_site = get_current_site(self.context['request']).domain
+#         image_list = []
+#         for img in images:
+#             image_list.append(
+#                 f'http://{current_site}{settings.MEDIA_URL + str(img)}')
+#         return image_list
+
+#     def create(self, validated_data):
+#         brand_data = validated_data.pop('brand')
+#         category_data = validated_data.pop('category')
+#         colors_data = validated_data.pop('colors')
+#         sizes_data = validated_data.pop('sizes')
+#         brand, created = Brand.objects.get_or_create(**brand_data)
+#         category, created = Category.objects.get_or_create(**category_data)
+
+#         product = Product.objects.create(
+#             brand=brand,
+#             category=category,
+#             **validated_data
+#         )
+
+#         colors = [Color.objects.create(**color_data)
+#                   for color_data in colors_data]
+#         sizes = [Size.objects.create(**size_data) for size_data in sizes_data]
+
+#         product.colors.set(colors)
+#         product.sizes.set(sizes)
+
+#         return product
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    is_in_cart = serializers.SerializerMethodField()
+    is_in_wishlist = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ["id", "title", "price", "discount", "description",
+                  "label", "image", "is_in_cart", "is_in_wishlist"]
+
+    def get_is_in_cart(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            cart_item = CartItem.objects.filter(product=obj).exists()
+            return cart_item
+        else:
+            return False
+
+    def get_is_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            wishlist = WishList.objects.filter(product=obj).exists()
+            return wishlist
+        else:
+            return False
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    brand = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
+    colors = serializers.SerializerMethodField()
+    sizes = serializers.SerializerMethodField()
+    is_in_cart = serializers.SerializerMethodField()
+    is_in_wishlist = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ["created_at", "update_at", "active"]
+
+    def get_is_in_cart(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            cart_item = CartItem.objects.filter(product=obj).exists()
+            return cart_item
+        else:
+            return False
+
+    def get_is_in_wishlist(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            wishlist = WishList.objects.filter(product=obj).exists()
+            return wishlist
+        else:
+            return False
 
     def get_images(self, obj):
         images = obj.images.all()
@@ -192,41 +286,16 @@ class ProductSerializer(serializers.ModelSerializer):
                 f'http://{current_site}{settings.MEDIA_URL + str(img)}')
         return image_list
 
-    def create(self, validated_data):
-        brand_data = validated_data.pop('brand')
-        category_data = validated_data.pop('category')
-        colors_data = validated_data.pop('colors')
-        sizes_data = validated_data.pop('sizes')
-        print(brand_data)
-        brand, created = Brand.objects.get_or_create(**brand_data)
-        category = Category.objects.create(**category_data)
+    def get_colors(self, obj):
+        colors = obj.colors.all()
+        return [color.name for color in colors]
 
-        product = Product.objects.create(
-            brand=brand,
-            category=category,
-            **validated_data
-        )
-
-        colors = [Color.objects.create(**color_data)
-                  for color_data in colors_data]
-        sizes = [Size.objects.create(**size_data) for size_data in sizes_data]
-
-        # Set the many-to-many relationship using the 'set' method
-        product.colors.set(colors)
-        # Set the many-to-many relationship using the 'set' method
-        product.sizes.set(sizes)
-
-        return product
+    def get_sizes(self, obj):
+        sizes = obj.sizes.all()
+        return [size.size for size in sizes]
 
 
 class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
-        fields = '__all__'
-
-
-class ImageSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Image
         fields = '__all__'

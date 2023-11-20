@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from cart.models import CartItem
-from .models import (Product, Brand, Category, Color,
-                     Size, Evaluation, WishList, Image)
+from .models import *
+from authentication.serializers import UserSerializer
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
+from rest_framework.utils import model_meta
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -200,18 +201,20 @@ class EvaluationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # Get the user and product objects from the context or the data
         user = self.context['request'].user
         product = Product.objects.get(id=self.initial_data['product'])
         # Create the evaluation object with the user and product
-        evaluation = Evaluation.objects.create(
-            user=user, product=product, **validated_data)
-        return evaluation
+        try:
+            evaluation = Evaluation.objects.get(user=user, product=product)
+            raise serializers.ValidationError(
+                "You have already evaluated this product")
+        except Evaluation.DoesNotExist:
+            evaluation = Evaluation.objects.create(
+                user=user, product=product, **validated_data)
+            return evaluation
 
     def get_user(self, obj):
-        user = obj.user
-        if user:
-            return user.username
+        return str(obj.user)
 
     def get_product(self, obj):
         product = obj.product

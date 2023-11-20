@@ -1,7 +1,6 @@
 from rest_framework import generics, status, views, permissions
 from .models import User
-from .serializers import (
-    RegisterSerializer, RequestPasswordResetEmailSerializer, SetNewPasswordSerializer)
+from .serializers import *
 from rest_framework.response import Response
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -9,6 +8,8 @@ from .utils import Utils
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 # Create your views here.
 
 
@@ -21,6 +22,24 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ChangePasswordView(views.APIView):
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            old_password = serializer.data.get('old_password')
+            new_password = serializer.data.get('new_password')
+
+            if not check_password(old_password, user.password):
+                return Response({'error': 'Invalid old password'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(new_password)
+            user.save()
+            return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RequestPasswordResetEmailView(generics.GenericAPIView):

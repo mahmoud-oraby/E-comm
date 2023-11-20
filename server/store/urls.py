@@ -10,17 +10,7 @@
 
 from django.urls import include, path
 from rest_framework import routers
-from .views import (
-    BrandViewSet,
-    CategoryViewSet,
-    ColorViewSet,
-    SizeViewSet,
-    ProductViewSet,
-    EvaluationViewSet,
-    WishListViewSet,
-    ImageViewSet,
-    BestSellerView
-)
+from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'brands', BrandViewSet)
@@ -30,6 +20,7 @@ router.register(r'sizes', SizeViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'evaluations', EvaluationViewSet)
 router.register(r'wishlists', WishListViewSet)
+router.register(r'evaluation', EvaluationViewSet)
 router.register(r'images', ImageViewSet)
 
 urlpatterns = [

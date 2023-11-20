@@ -24,11 +24,6 @@ class SizeViewSet(viewsets.ModelViewSet):
     serializer_class = SizeSerializer
 
 
-class EvaluationViewSet(viewsets.ModelViewSet):
-    queryset = Evaluation.objects.all()
-    serializer_class = EvaluationSerializer
-
-
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer

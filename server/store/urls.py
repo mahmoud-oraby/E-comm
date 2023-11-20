@@ -20,7 +20,6 @@ router.register(r'sizes', SizeViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'evaluations', EvaluationViewSet)
 router.register(r'wishlists', WishListViewSet)
-router.register(r'evaluation', EvaluationViewSet)
 router.register(r'images', ImageViewSet)
 
 urlpatterns = [

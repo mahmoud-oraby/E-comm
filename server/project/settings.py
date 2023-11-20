@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-d@6ti$4==i-p$@t5@r@ux(8$5@@lbkstq9^y__c+$mo9ntgx)(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', "localhost"]
 
 AUTH_USER_MODEL = 'authentication.User'
 
@@ -53,7 +53,9 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5
 }
 
 SIMPLE_JWT = {

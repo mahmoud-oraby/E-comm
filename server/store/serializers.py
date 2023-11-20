@@ -229,7 +229,8 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "title", "price", "discount", "description",
-                  "label", "image", "is_in_cart", "is_in_wishlist"]
+                  "label", "image", "is_in_cart", "is_in_wishlist", "selled"]
+        read_only_fields = ["selled"]
 
     def get_is_in_cart(self, obj):
         user = self.context['request'].user

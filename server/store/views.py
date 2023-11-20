@@ -87,7 +87,7 @@
 #         return self.queryset.filter(user=self.request.user)
 
 
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from .models import *
 from .serializers import (
     BrandSerializer,
@@ -135,6 +135,15 @@ class ProductViewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return ProductDetailSerializer
         return ProductListSerializer
+
+
+class BestSellerView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.order_by("-selled")
 
 
 class WishListViewSet(viewsets.ModelViewSet):

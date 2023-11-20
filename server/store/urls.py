@@ -19,6 +19,7 @@ from .views import (
     EvaluationViewSet,
     WishListViewSet,
     ImageViewSet,
+    BestSellerView
 )
 
 router = routers.DefaultRouter()
@@ -33,4 +34,5 @@ router.register(r'images', ImageViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('product/best_seller/', BestSellerView.as_view(), name="best-seller")
 ]

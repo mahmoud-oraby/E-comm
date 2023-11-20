@@ -12,7 +12,6 @@ dash-html-components==2.0.0
 dash-table==5.0.0
 Django==4.2.6
 django-cors-headers==4.3.0
-django-plotly-dash==2.2.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.0
 dpd-components==0.1.0

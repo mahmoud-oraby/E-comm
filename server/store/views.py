@@ -44,7 +44,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         category = self.request.query_params.get('category')
         size = self.request.query_params.get('size')
 
-        # Build filter expressions
         filters = Q()
 
         if color:
@@ -83,7 +82,6 @@ class BestSellerView(generics.ListAPIView):
         category = self.request.query_params.get('category')
         size = self.request.query_params.get('size')
 
-        # Build filter expressions
         filters = Q()
 
         if color:
@@ -115,6 +113,10 @@ class WishListViewSet(viewsets.ModelViewSet):
 class EvaluationViewSet(viewsets.ModelViewSet):
     queryset = Evaluation.objects.all()
     serializer_class = EvaluationSerializer
+
+    def get_queryset(self):
+        # Return evaluations of the current authenticated user
+        return Evaluation.objects.filter(user=self.request.user)
 
 
 class ImageViewSet(viewsets.ModelViewSet):

@@ -89,12 +89,12 @@ class ImageSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     is_in_cart = serializers.SerializerMethodField()
     is_in_wishlist = serializers.SerializerMethodField()
+    evaluation = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ["id", "title", "price", "discount", "description",
-                  "label", "image", "is_in_cart", "is_in_wishlist", "selled"]
-        read_only_fields = ["selled"]
+                  "label", "image", "is_in_cart", "is_in_wishlist", "selled", "evaluation"]
 
     def get_is_in_cart(self, obj):
         user = self.context['request'].user
@@ -111,6 +111,11 @@ class ProductListSerializer(serializers.ModelSerializer):
             return wishlist
         else:
             return False
+
+    def get_evaluation(self, obj):
+        reviews = obj.reviews.all()
+        rate_list = [rating.rate for rating in reviews]
+        return sum(rate_list)/len(rate_list) if len(rate_list) > 0 else 0
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

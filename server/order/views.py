@@ -7,3 +7,4 @@ from .models import Order
 class OrderListCreateView(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializers
+    pagination_class = None

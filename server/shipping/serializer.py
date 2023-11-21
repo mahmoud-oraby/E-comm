@@ -9,6 +9,6 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        address, _ = ShippingAddress.objects.get_or_create(
+        address, created = ShippingAddress.objects.get_or_create(
             user=user, **validated_data)
         return address

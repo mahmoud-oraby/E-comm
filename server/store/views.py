@@ -64,7 +64,18 @@ class ProductViewSet(viewsets.ModelViewSet):
         if size:
             filters &= Q(sizes__size=size.upper())
 
-        return queryset.filter(filters)
+        queryset = queryset.filter(filters)
+        # Apply sorting
+        sort_by = self.request.query_params.get('sort_by')
+
+        if sort_by == '-title':
+            queryset = queryset.order_by('-title')
+        elif sort_by == '-price':
+            queryset = queryset.order_by('-price')
+        elif sort_by == '-reviews':
+            queryset = queryset.order_by('-reviews')
+
+        return queryset
 
 
 class BestSellerView(generics.ListAPIView):

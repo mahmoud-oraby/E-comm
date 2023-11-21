@@ -73,4 +73,4 @@ class SetNewPasswordSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = 'username'
+        fields = ['id', 'username', 'email']

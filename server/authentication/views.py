@@ -93,3 +93,6 @@ class UserDetailsView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = None
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)

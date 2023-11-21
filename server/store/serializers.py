@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from cart.models import CartItem
-from .models import *
+from .models import (Product, Brand, Category, Color,
+                     Size, Evaluation, WishList, Image)
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.utils import model_meta

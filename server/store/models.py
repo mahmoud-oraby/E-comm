@@ -6,14 +6,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
 
     class Meta:
         verbose_name = 'Category'
@@ -24,21 +24,21 @@ class Category(models.Model):
 
 
 class Color(models.Model):
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=32, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class Size(models.Model):
-    size = models.CharField(max_length=10)
+    size = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.size
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to='uploads/images_product/')
+    image = models.ImageField(upload_to='uploads/images_product/', unique=True)
 
     def __str__(self):
         return str(self.image)
@@ -48,7 +48,7 @@ class Product(models.Model):
     title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to='uploads/images_product/')
+    image = models.ImageField(upload_to='uploads/images_product/', unique=True)
     images = models.ManyToManyField(Image, blank=True, related_name="product")
     discount = models.PositiveIntegerField()
     brand = models.ForeignKey(

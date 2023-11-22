@@ -88,11 +88,11 @@ class SetNewPasswordAPIView(generics.GenericAPIView):
         return Response({"Success": True, "message": "Password reset success."}, status=status.HTTP_200_OK)
 
 
-class UserDetailsView(generics.ListAPIView):
+class UserDetailsView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = None
 
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
+    def get_object(self):
+        return self.request.user

@@ -2,6 +2,8 @@ from rest_framework import viewsets, generics
 from .models import *
 from .serializers import *
 from django.db.models import Q
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -49,19 +51,19 @@ class ProductViewSet(viewsets.ModelViewSet):
         if color:
             filters &= Q(colors__name=color.title())
 
-        if price_min:
+        elif price_min:
             filters &= Q(price__gte=price_min)
 
-        if price_max:
+        elif price_max:
             filters &= Q(price__lte=price_max)
 
-        if brand:
+        elif brand:
             filters &= Q(brand__name=brand.title())
 
-        if category:
+        elif category:
             filters &= Q(category__name=category.title())
 
-        if size:
+        elif size:
             filters &= Q(sizes__size=size.upper())
 
         queryset = queryset.filter(filters)
@@ -98,19 +100,19 @@ class BestSellerView(generics.ListAPIView):
         if color:
             filters &= Q(colors__name=color.title())
 
-        if price_min:
+        elif price_min:
             filters &= Q(price__gte=price_min)
 
-        if price_max:
+        elif price_max:
             filters &= Q(price__lte=price_max)
 
-        if brand:
+        elif brand:
             filters &= Q(brand__name=brand.title())
 
-        if category:
+        elif category:
             filters &= Q(category__name=category.title())
 
-        if size:
+        elif size:
             filters &= Q(sizes__size=size.upper())
 
         return queryset.filter(filters)
@@ -133,3 +135,20 @@ class EvaluationViewSet(viewsets.ModelViewSet):
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+
+
+class DataAPIView(APIView):
+    def get(self, request):
+        brands = Brand.objects.all()
+        colors = Color.objects.all()
+        categories = Category.objects.all()
+        sizes = Size.objects.all()
+
+        serializer = DataSerializer({
+            'brands': brands,
+            'colors': colors,
+            'categories': categories,
+            'sizes': sizes
+        })
+
+        return Response(serializer.data)

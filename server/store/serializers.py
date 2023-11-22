@@ -8,27 +8,47 @@ from rest_framework.utils import model_meta
 
 
 class BrandSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
     class Meta:
         model = Brand
-        fields = '__all__'
+        fields = ["name", "products"]
+
+    def get_products(self, obj):
+        return obj.product.count()
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ["name", "products"]
+
+    def get_products(self, obj):
+        return obj.product.count()
 
 
 class ColorSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
     class Meta:
         model = Color
-        fields = ["name"]
+        fields = ["name", "products"]
+
+    def get_products(self, obj):
+        return obj.product.count()
 
 
 class SizeSerializer(serializers.ModelSerializer):
+    products = serializers.SerializerMethodField()
+
     class Meta:
         model = Size
-        fields = '__all__'
+        fields = ["size", "products"]
+
+    def get_products(self, obj):
+        return obj.product.count()
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
@@ -220,3 +240,10 @@ class EvaluationSerializer(serializers.ModelSerializer):
         product = obj.product
         if product:
             return product.title
+
+
+class DataSerializer(serializers.Serializer):
+    brands = BrandSerializer(many=True)
+    colors = ColorSerializer(many=True)
+    categories = CategorySerializer(many=True)
+    sizes = SizeSerializer(many=True)

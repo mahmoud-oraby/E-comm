@@ -118,21 +118,6 @@ class BestSellerView(generics.ListAPIView):
         return queryset.filter(filters)
 
 
-class WishListViewSet(viewsets.ModelViewSet):
-    queryset = WishList.objects.all()
-    serializer_class = WishListCreateSerializer
-    pagination_class = None
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return WishListGetSerializer
-        return self.serializer_class
-
-    def get_queryset(self):
-        # Return evaluations of the current authenticated user
-        return WishList.objects.filter(user=self.request.user)
-
-
 class EvaluationViewSet(viewsets.ModelViewSet):
     queryset = Evaluation.objects.all()
     serializer_class = EvaluationSerializer

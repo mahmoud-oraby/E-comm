@@ -16,20 +16,6 @@ class CartList(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-# class CartItemCreateView(generics.CreateAPIView):
-#     queryset = CartItem.objects.all()
-#     create_serializer_class = CartItemSerializer
-#     list_serializer_class = ListCartItemSerializer
-
-#     def get_object(self):
-#         cart_id = Cart.objects.get(user=self.request.user)
-#         return self.queryset.filter(cart_id=cart_id).order_by("-id")
-
-#     def perform_create(self, serializer):
-#         cart_id = Cart.objects.get(user=self.request.user)
-#         serializer.save(cart=cart_id)
-
-
 class CartItemListCreateAPIView(APIView):
 
     def get(self, request, format=None):

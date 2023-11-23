@@ -206,46 +206,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         return sum(rate_list)/len(rate_list) if len(rate_list) > 0 else 0
 
 
-class WishListCreateSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(required=False)
-
-    class Meta:
-        model = WishList
-        fields = '__all__'
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        product = validated_data['product']
-        try:
-            wishlist = WishList.objects.get(
-                user=user, product=product).delete()
-            return wishlist
-        except WishList.DoesNotExist:
-            wishlist = WishList.objects.create(user=user, product=product)
-            return wishlist
-
-
-class WishListGetSerializer(serializers.ModelSerializer):
-    product = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-    price = serializers.SerializerMethodField()
-
-    class Meta:
-        model = WishList
-        fields = ["id", "product", "image", "price"]
-
-    def get_product(self, obj):
-        return str(obj.product)
-
-    def get_image(self, obj):
-        image = obj.product
-        return image.image.url if image else None
-
-    def get_price(self, obj):
-        price = obj.product
-        return price.price if price else None
-
-
 class EvaluationSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     product = serializers.SerializerMethodField()

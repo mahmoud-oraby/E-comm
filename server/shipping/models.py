@@ -12,7 +12,7 @@ class ShippingAddress(models.Model):
     address1 = models.CharField(max_length=250)
     address2 = models.CharField(max_length=250, blank=True)
     zip_code = models.PositiveIntegerField()
-    primary_address = models.BooleanField(default=False, blank=True)
+    default_address = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return f"{self.user} - {str(self.address1)}"

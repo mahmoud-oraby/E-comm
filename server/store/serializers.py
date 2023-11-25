@@ -5,6 +5,7 @@ from .models import (Product, Brand, Category, Color,
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.utils import model_meta
+from wishlist.models import WishList, WishListItem
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -120,15 +121,17 @@ class ProductListSerializer(serializers.ModelSerializer):
     def get_is_in_cart(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            cart_item = CartItem.objects.filter(product=obj).exists()
-            return cart_item
+            return CartItem.objects.filter(
+                cart_id__user_id=self.context["request"].user, product=obj).exists()
+
         else:
             return False
 
     def get_is_in_wishlist(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            wishlist = WishList.objects.filter(product=obj).exists()
+            wishlist = WishListItem.objects.filter(
+                wishlist_id__user_id=self.context["request"].user, product=obj).exists()
             return wishlist
         else:
             return False
@@ -157,15 +160,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def get_is_in_cart(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            cart_item = CartItem.objects.filter(product=obj).exists()
-            return cart_item
+            return CartItem.objects.filter(
+                cart_id__user_id=self.context["request"].user, product=obj).exists()
+
         else:
             return False
 
     def get_is_in_wishlist(self, obj):
         user = self.context['request'].user
         if user.is_authenticated:
-            wishlist = WishList.objects.filter(product=obj).exists()
+            wishlist = WishListItem.objects.filter(
+                wishlist_id__user_id=self.context["request"].user, product=obj).exists()
             return wishlist
         else:
             return False

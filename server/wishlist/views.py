@@ -1,5 +1,8 @@
-from rest_framework import generics
-from rest_framework import permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 from .models import *
 from .serializers import *
 
@@ -26,3 +29,10 @@ class WishListItemView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(wishlist_id__user_id=self.request.user)
+
+
+class WishListDeleteAPIVew(APIView):
+    def delete(self, request, id):
+        wishlist_item = get_object_or_404(WishListItem, product_id=id)
+        wishlist_item.delete()
+        return Response({"message": "Product deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)

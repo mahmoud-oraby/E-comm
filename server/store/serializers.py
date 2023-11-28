@@ -112,11 +112,12 @@ class ProductListSerializer(serializers.ModelSerializer):
     is_in_cart = serializers.SerializerMethodField()
     is_in_wishlist = serializers.SerializerMethodField()
     evaluation = serializers.SerializerMethodField()
+    evaluation_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = ["id", "title", "price", "discount", "description",
-                  "label", "image", "is_in_cart", "is_in_wishlist", "selled", "evaluation"]
+                  "label", "image", "is_in_cart", "is_in_wishlist", "selled", "evaluation", "evaluation_count"]
 
     def get_is_in_cart(self, obj):
         user = self.context['request'].user
@@ -140,6 +141,10 @@ class ProductListSerializer(serializers.ModelSerializer):
         reviews = obj.reviews.all()
         rate_list = [rating.rate for rating in reviews]
         return sum(rate_list)/len(rate_list) if len(rate_list) > 0 else 0
+
+    def get_evaluation_count(self, obj):
+        reviews = obj.reviews.all()
+        return len(reviews)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

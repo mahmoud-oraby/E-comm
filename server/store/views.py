@@ -39,17 +39,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
 
         # Apply filters based on query parameters
-        color = self.request.query_params.get('color')
+        colors = self.request.query_params.getlist('color')
         price_min = self.request.query_params.get('price_min')
         price_max = self.request.query_params.get('price_max')
-        brand = self.request.query_params.get('brand')
-        category = self.request.query_params.get('category')
-        size = self.request.query_params.get('size')
+        brands = self.request.query_params.getlist('brand')
+        categories = self.request.query_params.getlist('category')
+        sizes = self.request.query_params.getlist('size')
 
         filters = Q()
 
-        if color:
-            filters &= Q(colors__name=color.title())
+        if colors:
+            filters &= Q(colors__name__in=[color.title() for color in colors])
 
         elif price_min:
             filters &= Q(price__gte=price_min)
@@ -57,14 +57,15 @@ class ProductViewSet(viewsets.ModelViewSet):
         elif price_max:
             filters &= Q(price__lte=price_max)
 
-        elif brand:
-            filters &= Q(brand__name=brand.title())
+        elif brands:
+            filters &= Q(brand__name__in=[brand.title() for brand in brands])
 
-        elif category:
-            filters &= Q(category__name=category.title())
+        elif categories:
+            filters &= Q(category__name__in=[
+                         category.title() for category in categories])
 
-        elif size:
-            filters &= Q(sizes__size=size.upper())
+        elif sizes:
+            filters &= Q(sizes__size__in=[size.upper() for size in sizes])
 
         queryset = queryset.filter(filters)
         # Apply sorting
@@ -88,17 +89,17 @@ class BestSellerView(generics.ListAPIView):
         queryset = super().get_queryset()
 
         # Apply filters based on query parameters
-        color = self.request.query_params.get('color')
+        colors = self.request.query_params.get('color')
         price_min = self.request.query_params.get('price_min')
         price_max = self.request.query_params.get('price_max')
-        brand = self.request.query_params.get('brand')
-        category = self.request.query_params.get('category')
-        size = self.request.query_params.get('size')
+        brands = self.request.query_params.get('brand')
+        categories = self.request.query_params.get('category')
+        sizes = self.request.query_params.get('size')
 
         filters = Q()
 
-        if color:
-            filters &= Q(colors__name=color.title())
+        if colors:
+            filters &= Q(colors__name__in=[color.title() for color in colors])
 
         elif price_min:
             filters &= Q(price__gte=price_min)
@@ -106,14 +107,15 @@ class BestSellerView(generics.ListAPIView):
         elif price_max:
             filters &= Q(price__lte=price_max)
 
-        elif brand:
-            filters &= Q(brand__name=brand.title())
+        elif brands:
+            filters &= Q(brand__name__in=[brand.title() for brand in brands])
 
-        elif category:
-            filters &= Q(category__name=category.title())
+        elif categories:
+            filters &= Q(category__name__in=[
+                         category.title() for category in categories])
 
-        elif size:
-            filters &= Q(sizes__size=size.upper())
+        elif sizes:
+            filters &= Q(sizes__size__in=[size.upper() for size in sizes])
 
         return queryset.filter(filters)
 

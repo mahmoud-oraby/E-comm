@@ -32,6 +32,8 @@ class WishListItemView(generics.ListCreateAPIView):
 
 
 class WishListDeleteAPIVew(APIView):
+    # Delete a wishlist item by product id
+
     def delete(self, request, id):
         wishlist_item = get_object_or_404(WishListItem, product_id=id)
         wishlist_item.delete()

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "shipping",
     "contact",
     "wishlist",
+    "coupon",
 ]
 
 REST_FRAMEWORK = {

@@ -1,6 +1,7 @@
 from django.db import models
 from store.models import Product
 from django.conf import settings
+from coupon.models import Coupon
 
 # Create your models here.
 
@@ -8,6 +9,8 @@ from django.conf import settings
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
+    coupon = models.ForeignKey(
+        Coupon, on_delete=models.SET_NULL, related_name="cart", null=True, blank=True)
 
     def __str__(self):
         return self.user.username

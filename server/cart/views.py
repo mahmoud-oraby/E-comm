@@ -3,26 +3,31 @@ from .models import Cart, CartItem
 from .serializers import CartSerializer, CartItemSerializer, ListCartItemSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from coupon.serializers import CouponSerializer
+from django.db.models import Sum
 
 
-class CartList(generics.ListCreateAPIView):
+class CartList(generics.ListAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None
 
-    def get_object(self):
-        return self.queryset.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
 
 
 class CartItemListCreateAPIView(APIView):
 
     def get(self, request, format=None):
-        queryset = CartItem.objects.all()
+        queryset = CartItem.objects.filter(cart_id__user_id=self.request.user)
+        cart = Cart.objects.get(user=request.user)
         serializer = ListCartItemSerializer(
             queryset, many=True, context={"request": request})
-        return Response(serializer.data)
+        coupon_serializer = CouponSerializer(cart.coupon)
+
+        return Response({"coupon": coupon_serializer.data['code'], "data": serializer.data})
 
     def post(self, request, format=None):
 

@@ -5,4 +5,4 @@ from .models import *
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
-        fields = "__all__"
+        exclude = ["created_at", "updated_at"]

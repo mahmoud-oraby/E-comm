@@ -3,10 +3,19 @@ from .models import Cart, CartItem
 
 
 class CartSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Cart
-        fields = ('id', 'user')
+        fields = ['id', 'user']
         read_only_fields = ['id']
+
+    def get_user(self, obj):
+        return str(obj.user.username)
+
+    def to_representation(self, instance):
+        user_data = instance.user.username
+        return user_data
 
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -43,7 +52,7 @@ class ListCartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ('id', 'cart', 'product', 'quantity', 'total_price')
+        fields = ('id', 'cart', 'product', 'quantity', 'total_price',)
         read_only_fields = ['id']
 
     def get_cart(self, obj):

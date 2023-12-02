@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from coupon.serializers import CouponSerializer
 from django.db.models import Sum
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 
 class CartList(generics.ListAPIView):
@@ -43,3 +45,13 @@ class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CartItem.objects.all()
     serializer_class = ListCartItemSerializer
     lookup_field = "id"
+
+
+class CartItemDeleteAPIVew(APIView):
+    # Delete a Cart item  by product id
+
+    def delete(self, request, id):
+        wishlist_item = get_object_or_404(
+            CartItem, product_id=id, cart_id__user_id=request.user)
+        wishlist_item.delete()
+        return Response({"message": "Product deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)

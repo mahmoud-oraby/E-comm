@@ -52,20 +52,20 @@ class ProductViewSet(viewsets.ModelViewSet):
         if colors:
             filters &= Q(colors__name__in=[color.title() for color in colors])
 
-        elif price_min:
+        if price_min:
             filters &= Q(price__gte=price_min)
 
-        elif price_max:
+        if price_max:
             filters &= Q(price__lte=price_max)
 
-        elif brands:
+        if brands:
             filters &= Q(brand__name__in=[brand.title() for brand in brands])
 
-        elif categories:
+        if categories:
             filters &= Q(category__name__in=[
                          category.title() for category in categories])
 
-        elif sizes:
+        if sizes:
             filters &= Q(sizes__size__in=[size.upper() for size in sizes])
 
         queryset = queryset.filter(filters)
@@ -74,9 +74,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         if sort_by == '-title':
             queryset = queryset.order_by('-title')
-        elif sort_by == '-price':
+        if sort_by == '-price':
             queryset = queryset.order_by('-price')
-        elif sort_by == '-reviews':
+        if sort_by == '-reviews':
             queryset = queryset.order_by('-reviews')
 
         return queryset
@@ -102,20 +102,20 @@ class BestSellerView(generics.ListAPIView):
         if colors:
             filters &= Q(colors__name__in=[color.title() for color in colors])
 
-        elif price_min:
+        if price_min:
             filters &= Q(price__gte=price_min)
 
-        elif price_max:
+        if price_max:
             filters &= Q(price__lte=price_max)
 
-        elif brands:
+        if brands:
             filters &= Q(brand__name__in=[brand.title() for brand in brands])
 
-        elif categories:
+        if categories:
             filters &= Q(category__name__in=[
                          category.title() for category in categories])
 
-        elif sizes:
+        if sizes:
             filters &= Q(sizes__size__in=[size.upper() for size in sizes])
 
         return queryset.filter(filters)

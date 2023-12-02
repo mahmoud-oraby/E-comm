@@ -7,5 +7,7 @@ urlpatterns = [
          name="cart-item"),
     path("cart_item/<int:id>/", views.CartItemDetailView.as_view(),
          name="cart-item-detail"),
+    path("cart_item/delete/<int:id>/", views.CartItemDeleteAPIVew.as_view(),
+         name="delete-cart-item"),
 
 ]

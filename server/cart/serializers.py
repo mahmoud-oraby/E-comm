@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Cart, CartItem
+from store.models import Product
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -46,17 +47,26 @@ class CartItemSerializer(serializers.ModelSerializer):
         return str(obj.cart)
 
 
+class CustomProductSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Product Model with customized data
+    """
+    class Meta:
+        model = Product
+        fields = ["id", "title", "image", "price"]
+
+
 class ListCartItemSerializer(serializers.ModelSerializer):
-    cart = serializers.SerializerMethodField()
-    product = serializers.SerializerMethodField()
+    # cart = serializers.SerializerMethodField()
+    product = CustomProductSerializer()
 
     class Meta:
         model = CartItem
-        fields = ('id', 'cart', 'product', 'quantity', 'total_price',)
+        fields = ('id', 'product', 'quantity', 'total_price',)
         read_only_fields = ['id']
 
-    def get_cart(self, obj):
-        return str(obj.cart)
+    # def get_cart(self, obj):
+    #     return str(obj.cart)
 
     def get_product(self, obj):
         return str(obj.product)

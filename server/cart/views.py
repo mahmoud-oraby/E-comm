@@ -28,8 +28,14 @@ class CartItemListCreateAPIView(APIView):
         serializer = ListCartItemSerializer(
             queryset, many=True, context={"request": request})
         coupon_serializer = CouponSerializer(cart.coupon)
+        coupon_dic = {
+            "code": coupon_serializer.data['code'],
+            "discount_type": coupon_serializer.data['discount_type'],
+            "discount_amount": coupon_serializer.data['discount_amount'],
 
-        return Response({"coupon": coupon_serializer.data['code'], "data": serializer.data})
+        }
+
+        return Response({"coupon_data": coupon_dic, "cart_item": serializer.data})
 
     def post(self, request, format=None):
 

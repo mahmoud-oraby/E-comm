@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from coupon.serializers import CouponSerializer
-from django.db.models import Sum
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
@@ -51,6 +50,11 @@ class CartItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CartItem.objects.all()
     serializer_class = ListCartItemSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(cart_id__user_id=self.request.user)
 
 
 class CartItemDeleteAPIVew(APIView):

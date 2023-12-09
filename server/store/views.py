@@ -5,6 +5,7 @@ from .serializers import *
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Avg
 
 
 class BrandViewSet(viewsets.ModelViewSet):
@@ -77,7 +78,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         if sort_by == '-price':
             queryset = queryset.order_by('-price')
         if sort_by == '-reviews':
-            queryset = queryset.order_by('-reviews')
+            queryset = Product.objects.annotate(
+                avg_rating=Avg('reviews__rate')).order_by('-avg_rating')
 
         return queryset
 

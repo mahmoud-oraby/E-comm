@@ -35,3 +35,13 @@ class ApplyCouponAPIView(APIView):
                 return Response({'message': "Coupon applied successfully", "copyright": " © Mahmoud-orabi 😁"}, status=status.HTTP_200_OK)
         except Coupon.DoesNotExist:
             return Response({'error': 'Coupon not is valid'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class DeleteCouponFormCart(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, format=None):
+        cart = get_object_or_404(Cart, user=request.user)
+        cart.coupon = None
+        cart.save()
+        return Response({'message': 'Coupon deleted'}, status=status.HTTP_200_OK)

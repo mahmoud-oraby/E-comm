@@ -9,7 +9,6 @@ class ShippingAddressCreateSerializer(serializers.ModelSerializer):
         exclude = ["default_address"]
 
     def create(self, validated_data):
-        print(validated_data)
         user = self.context["request"].user
         existing_default_address = ShippingAddress.objects.filter(
             user=user,  **validated_data).exists()

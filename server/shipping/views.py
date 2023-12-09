@@ -36,5 +36,11 @@ class SetDefaultAddress(APIView):
             address.save()
             data = {'message': 'success'}
         except ShippingAddress.DoesNotExist:
-            data = {"error": "Not found"}
+            try:
+                shipping_address = ShippingAddress.objects.get(id=id)
+                shipping_address.default_address = True
+                shipping_address.save()
+                data = {'message': 'success'}
+            except:
+                data = {"error": "Not found"}
         return Response(data)

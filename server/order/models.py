@@ -6,16 +6,19 @@ from shipping.models import ShippingAddress
 
 # Class Order
 class Order(models.Model):
+    STATUS_CHOICES = (('unpaid', 'unpaid'), ('pending', 'pending'), ('processing', 'processing'),
+                      ('shipped', 'shipped'), ('delivered', 'delivered'), ('canceled', 'canceled'))
     order_id = models.CharField(max_length=20, unique=True, blank=True)
     customer_name = models.CharField(max_length=100, blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(
         decimal_places=2, max_digits=5, blank=True)
     cart = models.ForeignKey(
         Cart, on_delete=models.SET_NULL, null=True, related_name="order")
-    shipping = models.OneToOneField(
+    shipping = models.ForeignKey(
         ShippingAddress, on_delete=models.CASCADE, related_name="order")
-    completed = models.BooleanField(default=False)
+    status = models.CharField(choices=STATUS_CHOICES,
+                              max_length=15, default='unpaid')
 
     def __str__(self):
         return self.order_id

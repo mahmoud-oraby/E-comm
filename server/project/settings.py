@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'drf_yasg',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt.token_blacklist',
     "rest_framework",
     "authentication",
     "store",
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     "contact",
     "wishlist",
     "coupon",
+    "checkout",
 ]
 
 REST_FRAMEWORK = {
@@ -62,15 +64,13 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=29),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-
 }
 
 SWAGGER_SETTINGS = {
@@ -158,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Cairo'
 
 USE_I18N = True
 
@@ -171,6 +171,10 @@ EMAIL_HOST_PASSWORD = 'd6fc80425c5c25'
 EMAIL_PORT = '2525'
 EMAIL_USE_TLS = True
 
+BACKEND_DOMAIN = "http://127.0.0.1:8000/"
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Nqef1L7E4O2ktraVr1yHPYlae0NxDHVfxpK7eqA3mEYaAvFgXhNXflSdIfUvb4frYzX9ePH6m5FHcCQqKEgB8Ri00DfMp10Tm'
+STRIPE_SECRET_KEY = 'sk_test_51Nqef1L7E4O2ktraNqme9NknSIBQYO5czkVnlZclwrnmBV9ODbD4Ur9CVmTaApwrHtxeRDE9FUypgAHSzH6APYIT004D236CgX'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

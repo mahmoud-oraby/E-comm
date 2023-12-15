@@ -18,7 +18,7 @@ class OrderSerializers(serializers.ModelSerializer):
         cart = Cart.objects.get(user=user)
         try:
             shipping = ShippingAddress.objects.get(
-                user=user, primary_address=True)
+                user=user, default_address=True)
         except ShippingAddress.DoesNotExist:
             return {'message': 'Please add a primary address'}
 

@@ -46,6 +46,7 @@ urlpatterns = [
     path('api/contact/', include("contact.urls")),
     path('api/wishlist/', include("wishlist.urls")),
     path('api/coupon/', include("coupon.urls")),
+    path('api/checkout/', include("checkout.urls")),
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0),
          name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger',

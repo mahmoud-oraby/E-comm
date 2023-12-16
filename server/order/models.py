@@ -12,13 +12,13 @@ class Order(models.Model):
     customer_name = models.CharField(max_length=100, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(
-        decimal_places=2, max_digits=5, blank=True)
+        decimal_places=2, max_digits=7, blank=True)
     cart = models.ForeignKey(
         Cart, on_delete=models.SET_NULL, null=True, related_name="order")
     shipping = models.ForeignKey(
-        ShippingAddress, on_delete=models.CASCADE, related_name="order")
+        ShippingAddress, on_delete=models.SET_NULL, blank=True, null=True, related_name="order")
     status = models.CharField(choices=STATUS_CHOICES,
                               max_length=15, default='unpaid')
 
     def __str__(self):
-        return self.order_id
+        return f'{self.order_id}-{self.cart}'

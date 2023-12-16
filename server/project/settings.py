@@ -13,20 +13,22 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d@6ti$4==i-p$@t5@r@ux(8$5@@lbkstq9^y__c+$mo9ntgx)('
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', "localhost"]
 
 AUTH_USER_MODEL = 'authentication.User'
 
@@ -97,8 +99,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:8000",
-    "http://192.168.1.3",
+
 ]
 
 
@@ -166,15 +167,15 @@ USE_TZ = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '8b36be357f77bf'
-EMAIL_HOST_PASSWORD = 'd6fc80425c5c25'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = '2525'
 EMAIL_USE_TLS = True
 
-BACKEND_DOMAIN = "http://127.0.0.1:8000/"
+BACKEND_DOMAIN = os.environ.get('BACKEND_DOMAIN')
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51Nqef1L7E4O2ktraVr1yHPYlae0NxDHVfxpK7eqA3mEYaAvFgXhNXflSdIfUvb4frYzX9ePH6m5FHcCQqKEgB8Ri00DfMp10Tm'
-STRIPE_SECRET_KEY = 'sk_test_51Nqef1L7E4O2ktraNqme9NknSIBQYO5czkVnlZclwrnmBV9ODbD4Ur9CVmTaApwrHtxeRDE9FUypgAHSzH6APYIT004D236CgX'
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

@@ -21,6 +21,8 @@ class CartItem(models.Model):
                              on_delete=models.CASCADE)
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="items")
+    color = models.CharField(max_length=20, blank=True, null=True)
+    size = models.CharField(max_length=20, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
     create_at = models.DateTimeField(auto_now_add=True)
 

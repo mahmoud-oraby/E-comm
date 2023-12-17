@@ -64,7 +64,7 @@ class ListCartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItem
-        fields = ('id', 'product', 'quantity', 'total_price',)
+        fields = ('id', 'product', 'quantity', 'total_price', 'color', 'size')
         read_only_fields = ['id']
 
     # def get_cart(self, obj):

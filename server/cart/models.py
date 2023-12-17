@@ -2,6 +2,7 @@ from django.db import models
 from store.models import Product
 from django.conf import settings
 from coupon.models import Coupon
+from django.db.models import Sum, F
 
 # Create your models here.
 
@@ -14,6 +15,11 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def get_cart_total(self):
+        total = self.items.aggregate(
+            cart_total=Sum(F('product__price')*F('quantity')))['cart_total']
+        return total if total else 0
 
 
 class CartItem(models.Model):

@@ -176,6 +176,7 @@ BACKEND_DOMAIN = os.environ.get('BACKEND_DOMAIN')
 
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+WEB_HOOk_SECRET = os.environ.get('WEB_HOOk_SECRET')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

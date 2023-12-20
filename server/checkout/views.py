@@ -85,7 +85,7 @@ def create_checkout_session_webhook(request):
     payload = request.body.decode('utf-8')
     sig_header = request.headers.get('Stripe-Signature')
 
-    endpoint_secret = "whsec_fef02366ab085857d530db25bbb5fe9ebdcca58182fb83304521ff6a40d17ee8"
+    endpoint_secret = settings.WEB_HOOk_SECRET
 
     event = None
 

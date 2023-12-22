@@ -39,5 +39,5 @@ class WishListGetSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
 
     class Meta:
-        model = WishList
-        fields = ["id", "product"]
+        model = WishListItem
+        fields = ["id", "product", 'created_at']

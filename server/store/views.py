@@ -92,12 +92,12 @@ class BestSellerView(generics.ListAPIView):
         queryset = super().get_queryset()
 
         # Apply filters based on query parameters
-        colors = self.request.query_params.get('color')
+        colors = self.request.query_params.getlist('color')
         price_min = self.request.query_params.get('price_min')
         price_max = self.request.query_params.get('price_max')
-        brands = self.request.query_params.get('brand')
-        categories = self.request.query_params.get('category')
-        sizes = self.request.query_params.get('size')
+        brands = self.request.query_params.getlist('brand')
+        categories = self.request.query_params.getlist('category')
+        sizes = self.request.query_params.getlist('size')
 
         filters = Q()
 

@@ -21,8 +21,8 @@ class CartSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     cart = serializers.SerializerMethodField()
-    color = serializers.CharField(max_length=20, required=True)
-    size = serializers.CharField(max_length=20, required=True)
+    color = serializers.CharField(max_length=20, required=False)
+    size = serializers.CharField(max_length=20, required=False)
 
     class Meta:
         model = CartItem

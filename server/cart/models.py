@@ -32,6 +32,15 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     create_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.color and self.product.colors.exists():
+            self.color = self.product.colors.first().name
+
+        if not self.size and self.product.sizes.exists():
+            self.size = self.product.sizes.first().size
+
+        super().save(*args, **kwargs)
+
     def total_price(self):
         price = self.product.price * self.quantity
         return price

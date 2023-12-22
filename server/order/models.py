@@ -4,7 +4,15 @@ from shipping.models import ShippingAddress
 # Create your models here.
 
 
+class ProductOrder(models.Model):
+    product_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.product_name
+
 # Class Order
+
+
 class Order(models.Model):
     STATUS_CHOICES = (('unpaid', 'unpaid'), ('pending', 'pending'), ('processing', 'processing'),
                       ('shipped', 'shipped'), ('delivered', 'delivered'), ('canceled', 'canceled'))
@@ -13,6 +21,7 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(
         decimal_places=2, max_digits=7, blank=True)
+    product = models.ManyToManyField(ProductOrder, verbose_name='order')
     cart = models.ForeignKey(
         Cart, on_delete=models.SET_NULL, null=True, related_name="order")
     shipping = models.ForeignKey(

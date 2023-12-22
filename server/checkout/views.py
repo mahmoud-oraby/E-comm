@@ -10,7 +10,6 @@ from order.utils import generate_random
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -24,25 +23,23 @@ def create_checkout_session(request):
     try:
         shipping = ShippingAddress.objects.get(
             user=user, default_address=True)
+
+        total = CartItem.objects.filter(cart=cart).aggregate(
+            total_price=Sum(F('product__price') * F('quantity')))['total_price']
+        if total:
+            try:
+                order = Order.objects.get(
+                    customer_name=user, status='unpaid')
+            except:
+                order = Order.objects.create(
+                    customer_name=user, cart=cart, order_id=generate_random(), total_price=total, shipping=shipping)
+        else:
+            return {'error': 'Cart item is empty.'}
+
     except ShippingAddress.DoesNotExist:
         return {'message': 'Please add a primary address'}
 
-    total = CartItem.objects.filter(cart=cart).aggregate(
-        total_price=Sum(F('product__price') * F('quantity')))['total_price']
-    if total:
-        try:
-            order = Order.objects.get(
-                customer_name=user, status='unpaid')
-        except:
-            order = Order.objects.create(
-                customer_name=user, cart=cart, order_id=generate_random(), total_price=total, shipping=shipping)
-    else:
-        pass
-
     cart_items = CartItem.objects.filter(cart_id__user_id=user).all()
-
-    default_address = ShippingAddress.objects.get(
-        user=user, default_address=True)
 
     line_items = []
     for item in cart_items:
@@ -106,6 +103,17 @@ def create_checkout_session_webhook(request):
         order = Order.objects.get(order_id=order_id)
         order.status = 'pending'
         order.save()
+
+        # Use the payment_intent to retrieve payment details
+        # payment_intent_id = session.payment_intent
+        # payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+
+        # Access the payment details
+        # card_brand = payment_intent.charges.data[0].payment_method_details.card.brand
+        # card_holder_name = payment_intent.charges.data[0].payment_method_details.card.owner.name
+        # last4 = payment_intent.charges.data[0].payment_method_details.card.last4
+
+        # Now you can use card_brand, card_holder_name, and last4 as needed
 
         cart_items = CartItem.objects.filter(cart_id__user_id=user_id)
         cart_items.delete()

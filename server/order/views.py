@@ -1,10 +1,16 @@
 from rest_framework import generics
-from .serializer import OrderSerializers
+from .serializer import OrderCreateSerializers, OrderGetSerializer
 from .models import Order
 # Create your views here.
 
 
-class OrderListCreateView(generics.ListCreateAPIView):
+class OrderListCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
-    serializer_class = OrderSerializers
+    serializer_class = OrderCreateSerializers
+    pagination_class = None
+
+
+class OrderListView(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderGetSerializer
     pagination_class = None

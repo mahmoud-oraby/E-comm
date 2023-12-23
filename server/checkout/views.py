@@ -3,12 +3,13 @@ import stripe
 from django.conf import settings
 from shipping.models import ShippingAddress
 from rest_framework.decorators import api_view
-from order.models import Order
+from order.models import Order, ProductOrder
 from cart.models import Cart, CartItem
 from django.db.models import F, Sum
 from order.utils import generate_random
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 
 
@@ -31,13 +32,18 @@ def create_checkout_session(request):
                 order = Order.objects.get(
                     customer_name=user, status='unpaid')
             except:
+                products = CartItem.objects.filter(cart=cart)
                 order = Order.objects.create(
                     customer_name=user, cart=cart, order_id=generate_random(), total_price=total, shipping=shipping)
+                for product in products:
+                    product_order, created = ProductOrder.objects.get_or_create(
+                        product_name=product.product)
+                    order.product.add(product_order)
         else:
             return {'error': 'Cart item is empty.'}
 
     except ShippingAddress.DoesNotExist:
-        return {'message': 'Please add a primary address'}
+        return Response({'error': 'Select default address.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     cart_items = CartItem.objects.filter(cart_id__user_id=user).all()
 
@@ -82,7 +88,7 @@ def create_checkout_session_webhook(request):
     payload = request.body.decode('utf-8')
     sig_header = request.headers.get('Stripe-Signature')
 
-    endpoint_secret = settings.WEB_HOOk_SECRET
+    endpoint_secret = settings.WEB_HOOK_SECRET
 
     event = None
 

@@ -37,7 +37,7 @@ def create_checkout_session(request):
                     customer_name=user, cart=cart, order_id=generate_random(), total_price=total, shipping=shipping)
                 for product in products:
                     product_order, created = ProductOrder.objects.get_or_create(
-                        product_name=product.product)
+                        product_name=product.product, price=product.product.price, quantity=product.quantity, image=product.product.image)
                     order.product.add(product_order)
         else:
             return {'error': 'Cart item is empty.'}
@@ -109,17 +109,6 @@ def create_checkout_session_webhook(request):
         order = Order.objects.get(order_id=order_id)
         order.status = 'pending'
         order.save()
-
-        # Use the payment_intent to retrieve payment details
-        # payment_intent_id = session.payment_intent
-        # payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
-
-        # Access the payment details
-        # card_brand = payment_intent.charges.data[0].payment_method_details.card.brand
-        # card_holder_name = payment_intent.charges.data[0].payment_method_details.card.owner.name
-        # last4 = payment_intent.charges.data[0].payment_method_details.card.last4
-
-        # Now you can use card_brand, card_holder_name, and last4 as needed
 
         cart_items = CartItem.objects.filter(cart_id__user_id=user_id)
         cart_items.delete()

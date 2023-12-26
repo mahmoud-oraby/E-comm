@@ -4,7 +4,7 @@ from .models import Order
 # Create your views here.
 
 
-class OrderListCreateView(generics.CreateAPIView):
+class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializers
     pagination_class = None

@@ -40,7 +40,7 @@ class OrderCreateSerializers(serializers.ModelSerializer):
                 customer_name=user, cart=cart, order_id=generate_random(), total_price=total, shipping=shipping)
             for product in products:
                 product_order, created = ProductOrder.objects.get_or_create(
-                    product_name=product.product)
+                    product_name=product.product, price=product.product.price, quantity=product.quantity, image=product.product.image)
                 order.product.add(product_order)
 
             CartItem.objects.all().delete()
@@ -68,5 +68,12 @@ class OrderGetSerializer(serializers.ModelSerializer):
         products = obj.product.all()
         product_list = []
         for item in products:
-            product_list.append(item.product_name)
+            # product_list.append(item.product_name)
+            # product_list.append(item.price)
+            product_dict = {
+                "product_name": item.product_name,
+                "price": item.price,
+                "image": item.image.url,
+            }
+            product_list.append(product_dict)
         return product_list

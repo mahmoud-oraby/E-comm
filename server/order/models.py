@@ -6,6 +6,10 @@ from shipping.models import ShippingAddress
 
 class ProductOrder(models.Model):
     product_name = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    quantity = models.PositiveIntegerField()
+    image = models.ImageField(
+        upload_to='uploads/product_order_image/', blank=True, null=True)
 
     def __str__(self):
         return self.product_name

@@ -29,6 +29,7 @@ class CartItemListCreateAPIView(APIView):
         coupon_serializer = CouponSerializer(cart.coupon)
         coupon_dic = {
             "code": coupon_serializer.data['code'],
+            "min_total": coupon_serializer.data['min_total'],
             "discount_type": coupon_serializer.data['discount_type'],
             "discount_amount": coupon_serializer.data['discount_amount'],
 
@@ -61,7 +62,7 @@ class CartItemDeleteAPIVew(APIView):
     # Delete a Cart item  by product id
 
     def delete(self, request, id):
-        wishlist_item = get_object_or_404(
+        cart_item = get_object_or_404(
             CartItem, product_id=id, cart_id__user_id=request.user)
-        wishlist_item.delete()
+        cart_item.delete()
         return Response({"message": "Product deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)

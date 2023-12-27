@@ -43,7 +43,7 @@ class OrderCreateSerializers(serializers.ModelSerializer):
                     product_name=product.product, price=product.product.price, quantity=product.quantity, image=product.product.image)
                 order.product.add(product_order)
 
-            CartItem.objects.all().delete()
+            CartItem.objects.filter(cart=cart).delete()
         else:
             raise serializers.ValidationError("Cart is empty")
         return order
@@ -68,8 +68,6 @@ class OrderGetSerializer(serializers.ModelSerializer):
         products = obj.product.all()
         product_list = []
         for item in products:
-            # product_list.append(item.product_name)
-            # product_list.append(item.price)
             product_dict = {
                 "product_name": item.product_name,
                 "price": item.price,

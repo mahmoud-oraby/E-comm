@@ -27,6 +27,14 @@ def create_checkout_session(request):
 
         total = CartItem.objects.filter(cart=cart).aggregate(
             total_price=Sum(F('product__price') * F('quantity')))['total_price']
+        if not cart.coupon == None:
+            coupon_value = cart.coupon.discount_amount
+            coupon_type = cart.coupon.discount_type
+            if coupon_type == 'P':
+                total -= (total * coupon_value / 100)
+            else:
+                total -= coupon_value
+
         if total:
             try:
                 order = Order.objects.get(
@@ -111,5 +119,10 @@ def create_checkout_session_webhook(request):
         order.save()
 
         cart_items = CartItem.objects.filter(cart_id__user_id=user_id)
+        cart = Cart.objects.get(user_id=user_id)
         cart_items.delete()
+        if not cart.coupon == None:
+            cart.coupon = None
+            cart.save()
+
     return Response(status=200)

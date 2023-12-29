@@ -44,7 +44,7 @@ class ApplyCouponAPIView(APIView):
             coupons = stripe.Coupon.list()
             coupon = [coupon for coupon in coupons if coupon.get(
                 'name') == coupon_code][0]
-            if not coupon :
+            if not coupon or coupon.valid == False:
                  return Response({'error': 'Coupon not is valid'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
             user = request.user

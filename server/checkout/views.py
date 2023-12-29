@@ -80,24 +80,28 @@ def create_checkout_session(request):
 
     if not line_items:
         # Handle the case where line_items is empty
-        return JsonResponse({'error': 'No items in the cart'})
+        return JsonResponse({'message': 'No items in the cart'})
     
     # Create the checkout session
     discount = []
     if coupon and int(coupon.metadata.min_total) <= total:
         discount.append({"coupon":coupon.id})
-    session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
-        line_items=line_items,
-        discounts=discount,
-        mode="payment",
-        success_url=os.environ.get("SUCCESS_URL"),
-        cancel_url=os.environ.get("CANCEL_URL"),
-        metadata={
-            'user_id': item.cart.user.id,
-            'order_id': order.order_id
-        },
-    )
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            discounts=discount,
+            mode="payment",
+            success_url=os.environ.get("SUCCESS_URL"),
+            cancel_url=os.environ.get("CANCEL_URL"),
+            metadata={
+                'user_id': item.cart.user.id,
+                'order_id': order.order_id
+            },
+        )
+    except stripe._error.InvalidRequestError:
+        return Response({"message":"This coupon is no longer available!"},status=status.HTTP_400_BAD_REQUEST)
+
 
     return JsonResponse({'checkout_url': session.url})
 

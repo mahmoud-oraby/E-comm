@@ -35,7 +35,8 @@ class CartItemListCreateAPIView(APIView):
                 'min_total': coupon['metadata']['min_total'],
                 'discount_type': coupon['metadata']['type'],
             }
-
+        else:
+            data = None
         return Response({'coupon_data': data, "cart_item": serializer.data})
 
     def post(self, request, format=None):

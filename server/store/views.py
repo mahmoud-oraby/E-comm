@@ -51,7 +51,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         filters = Q()
 
         if colors:
-            filters &= Q(colors__name__in=[color.title() for color in colors])
+            filters &= Q(colors__name__in=[color for color in colors])
 
         if price_min:
             filters &= Q(price__gte=price_min)
@@ -78,7 +78,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         if sort_by == '-price':
             queryset = queryset.order_by('-price')
         if sort_by == '-reviews':
-            queryset = Product.objects.annotate(
+            queryset = queryset.annotate(
                 avg_rating=Avg('reviews__rate')).order_by('-avg_rating')
 
         return queryset

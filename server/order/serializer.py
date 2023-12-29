@@ -72,6 +72,7 @@ class OrderGetSerializer(serializers.ModelSerializer):
                 "product_name": item.product_name,
                 "price": item.price,
                 "image": item.image.url,
+                "qty": item.quantity,
             }
             product_list.append(product_dict)
         return product_list

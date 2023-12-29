@@ -102,6 +102,11 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
+ALLOWED_HOSTS = [
+    "192.168.1.5",
+    "192.168.172.200",
+    '127.0.0.1'
+]
 
 ROOT_URLCONF = 'project.urls'
 

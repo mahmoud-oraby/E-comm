@@ -4,7 +4,7 @@ from .serializers import CartSerializer, CartItemSerializer, ListCartItemSeriali
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from coupon.serializers import CouponSerializer
+import stripe
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
@@ -26,16 +26,17 @@ class CartItemListCreateAPIView(APIView):
         cart = Cart.objects.get(user=request.user)
         serializer = ListCartItemSerializer(
             queryset, many=True, context={"request": request})
-        coupon_serializer = CouponSerializer(cart.coupon)
-        coupon_dic = {
-            "code": coupon_serializer.data['code'],
-            "min_total": coupon_serializer.data['min_total'],
-            "discount_type": coupon_serializer.data['discount_type'],
-            "discount_amount": coupon_serializer.data['discount_amount'],
+        if cart.coupon:
+            coupon_id = cart.coupon
+            coupon = stripe.Coupon.retrieve(coupon_id)
+            data = {
+                'code': coupon['name'],
+                'discount_amount': coupon['amount_off'],
+                'min_total': coupon['metadata']['min_total'],
+                'discount_type': coupon['metadata']['type'],
+            }
 
-        }
-
-        return Response({"coupon_data": coupon_dic, "cart_item": serializer.data})
+        return Response({'coupon_data': data, "cart_item": serializer.data})
 
     def post(self, request, format=None):
 

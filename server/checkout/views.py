@@ -11,7 +11,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
-
+import os
+import decimal
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -21,19 +22,24 @@ def create_checkout_session(request):
     user = request.user
 
     cart = Cart.objects.get(user=user)
+    apply_discount = False
+    coupon = None
     try:
         shipping = ShippingAddress.objects.get(
             user=user, default_address=True)
 
         total = CartItem.objects.filter(cart=cart).aggregate(
             total_price=Sum(F('product__price') * F('quantity')))['total_price']
-        if not cart.coupon == None:
-            coupon_value = cart.coupon.discount_amount
-            coupon_type = cart.coupon.discount_type
-            if coupon_type == 'P':
-                total -= (total * coupon_value / 100)
-            else:
-                total -= coupon_value
+        if cart.coupon:
+            coupon = stripe.Coupon.retrieve(cart.coupon)
+
+            if coupon.metadata.type == 'percentage' and int(coupon.metadata.min_total) <= total:
+                total -= (float(total) * (coupon.percent_off / 100) / 100)
+                apply_discount = True
+            elif coupon.metadata.type == 'fixed' and int(coupon.metadata.min_total) <= total:
+                total -= decimal.Decimal(str(float(coupon.amount_off) / 100))
+                apply_discount = True
+
 
         if total:
             try:
@@ -70,17 +76,23 @@ def create_checkout_session(request):
 
 
         })
+    
 
     if not line_items:
         # Handle the case where line_items is empty
         return JsonResponse({'error': 'No items in the cart'})
+    
     # Create the checkout session
+    discount = []
+    if coupon and int(coupon.metadata.min_total) <= total:
+        discount.append({"coupon":coupon.id})
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=line_items,
+        discounts=discount,
         mode="payment",
-        success_url=f"http://localhost:3000/checkout-success",
-        cancel_url="http://localhost:3000/checkout-error",
+        success_url=os.environ.get("SUCCESS_URL"),
+        cancel_url=os.environ.get("CANCEL_URL"),
         metadata={
             'user_id': item.cart.user.id,
             'order_id': order.order_id

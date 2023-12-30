@@ -42,7 +42,7 @@ class Image(models.Model):
     image = CloudinaryField('image')
 
     def __str__(self):
-        return str(self.image)
+        return str(self.image.url)
 
 
 class Product(models.Model):

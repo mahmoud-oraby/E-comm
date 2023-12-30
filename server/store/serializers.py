@@ -59,53 +59,14 @@ class EvaluationSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
-
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Image
         fields = '__all__'
+    def get_image(self,obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
 
-# # class ProductCreateSerializer(serializers.ModelSerializer):
-#     brand = BrandSerializer()
-#     category = CategorySerializer()
-#     colors = ColorSerializer(many=True)
-#     sizes = SizeSerializer(many=True)
-#     images = serializers.SerializerMethodField()
 
-#     class Meta:
-#         model = Product
-#         fields = "__all__"
-
-#     def get_images(self, obj):
-#         images = obj.images.all()
-#         current_site = get_current_site(self.context['request']).domain
-#         image_list = []
-#         for img in images:
-#             image_list.append(
-#                 f'http://{current_site}{settings.MEDIA_URL + str(img)}')
-#         return image_list
-
-#     def create(self, validated_data):
-#         brand_data = validated_data.pop('brand')
-#         category_data = validated_data.pop('category')
-#         colors_data = validated_data.pop('colors')
-#         sizes_data = validated_data.pop('sizes')
-#         brand, created = Brand.objects.get_or_create(**brand_data)
-#         category, created = Category.objects.get_or_create(**category_data)
-
-#         product = Product.objects.create(
-#             brand=brand,
-#             category=category,
-#             **validated_data
-#         )
-
-#         colors = [Color.objects.create(**color_data)
-#                   for color_data in colors_data]
-#         sizes = [Size.objects.create(**size_data) for size_data in sizes_data]
-
-#         product.colors.set(colors)
-#         product.sizes.set(sizes)
-
-#         return product
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -114,6 +75,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     evaluation = serializers.SerializerMethodField()
     evaluation_count = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -149,6 +111,9 @@ class ProductListSerializer(serializers.ModelSerializer):
     def get_evaluation_count(self, obj):
         reviews = obj.reviews.all()
         return len(reviews)
+    
+    def get_image(self,obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -190,7 +155,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         image_list = []
         for img in images:
             image_list.append(
-                f'http://{current_site}{settings.MEDIA_URL + str(img)}')
+                str(img))
         return image_list
 
     def get_colors(self, obj):

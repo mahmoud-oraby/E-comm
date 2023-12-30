@@ -1,6 +1,7 @@
 from django.db import models
 from authentication.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 
@@ -38,7 +39,7 @@ class Size(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to='uploads/images_product/')
+    image = CloudinaryField('image')
 
     def __str__(self):
         return str(self.image)
@@ -48,7 +49,7 @@ class Product(models.Model):
     title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    image = models.ImageField(upload_to='uploads/images_product/')
+    image = CloudinaryField('images_products')
     images = models.ManyToManyField(Image, blank=True, related_name="product")
     discount = models.PositiveIntegerField()
     brand = models.ForeignKey(
@@ -61,7 +62,7 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     free_shipping = models.BooleanField(default=False)
-    selled = models.PositiveIntegerField()
+    selled = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 

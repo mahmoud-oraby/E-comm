@@ -16,6 +16,10 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import dj_database_url
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +60,8 @@ INSTALLED_APPS = [
     "wishlist",
     "coupon",
     "checkout",
+
+    "cloudinary",
 ]
 
 REST_FRAMEWORK = {
@@ -183,9 +189,19 @@ EMAIL_USE_TLS = True
 
 BACKEND_DOMAIN = os.environ.get('BACKEND_DOMAIN')
 
+# Stripe integration
+
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 WEB_HOOK_SECRET = os.environ.get('WEB_HOOK_SECRET')
+
+# Cloudinary integration
+cloudinary.config(
+    cloud_name = "dsduomzyw",
+    api_key = "999329549344154",
+    api_secret = "6wsLAK6fhQJMyVCKBvsE_WhvI-0"
+    )
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -194,8 +210,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "assets"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

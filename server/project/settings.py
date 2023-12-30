@@ -101,8 +101,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://zeyad-ecomm.web.app",
-    "https://ecomm-store1.web.app/"
+    "https://ecomm-store1.web.app"
 
 ]
 

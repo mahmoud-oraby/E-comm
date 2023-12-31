@@ -30,9 +30,13 @@ class WishListItemSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Product
         fields = ["id", "title", "price", "image"]
+        
+    def get_image(self,obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
     
     
 

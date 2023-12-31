@@ -53,9 +53,13 @@ class CustomProductSerializer(serializers.ModelSerializer):
     """
     Serializer for Product Model with customized data
     """
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Product
         fields = ["id", "title", "image", "price"]
+    def get_image(self,obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
+
 
 
 class ListCartItemSerializer(serializers.ModelSerializer):

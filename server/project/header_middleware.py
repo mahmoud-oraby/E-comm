@@ -3,7 +3,6 @@ class CustomHeaderMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # إضافة الـheader المطلوب هنا
         request.META['Custom-Header'] = 'https://ecomm-store1.web.app'
 
         response = self.get_response(request)

@@ -126,6 +126,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     evaluation = serializers.SerializerMethodField()
     reviews = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -154,8 +155,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         current_site = get_current_site(self.context['request']).domain
         image_list = []
         for img in images:
-            image_list.append(
-                str(img))
+            image_list.append(str(img))
         return image_list
 
     def get_colors(self, obj):
@@ -183,6 +183,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         reviews = obj.reviews.all()
         rate_list = [rating.rate for rating in reviews]
         return sum(rate_list)/len(rate_list) if len(rate_list) > 0 else 0
+    
+    def get_image(self,obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
+
+
 
 
 class EvaluationSerializer(serializers.ModelSerializer):

@@ -18,14 +18,17 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
-
         if not username.isalnum():
             raise serializers.ValidationError(
                 'Username should only contain alphanumeric characters')
-        return attrs
+        try:
+            email_exists=User.objects.get(email=email)
+            raise serializers.ValidationError({"email": "user with this email already exists."})
+        except User.DoesNotExist:
+            return User.objects.create_user(email=email,username=username)
+        
 
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        
 
 
 class ChangePasswordSerializer(serializers.Serializer):

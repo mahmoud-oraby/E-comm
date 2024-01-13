@@ -8,7 +8,6 @@ from .utils import Utils
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-# from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 # Create your views here.
 

@@ -13,6 +13,7 @@ from rest_framework import status
 from rest_framework.authentication import BasicAuthentication
 import os
 import decimal
+from store.models import Product
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -136,6 +137,12 @@ def create_checkout_session_webhook(request):
 
         cart_items = CartItem.objects.filter(cart_id__user_id=user_id)
         cart = Cart.objects.get(user_id=user_id)
+
+        for cart_item in cart_items:
+            product  = cart_item.product
+            product.selled += cart_item.quantity
+            product.save()
+
         cart_items.delete()
         if not cart.coupon == None:
             cart.coupon = None
